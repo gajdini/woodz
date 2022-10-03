@@ -9,7 +9,7 @@
     <fragment
         android:id="@+id/projectFragment"
         android:name="com.tooz.woodz.fragment.ProjectFragment"
-        android:label="@string/app_name"
+        android:label="Projects"
         tools:layout="@layout/project_fragment" >
         <action
             android:id="@+id/action_projectFragment_to_materialFragment"
