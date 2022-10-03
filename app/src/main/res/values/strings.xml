@@ -4,4 +4,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search">Search</string>
+    <string name="width">Width</string>
+    <string name="height">Height</string>
+    <string name="type">Type</string>
+    <string name="group">Group</string>
+    <string name="forward">Forward</string>
 </resources>

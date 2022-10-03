@@ -28,6 +28,8 @@ class PlankAdapter(private val onItemClicked: (Plank) -> Unit) : ListAdapter<Pla
         fun bind(plank: Plank) {
             binding.plankWidthTextView.text = plank.width.toString()
             binding.plankHeightTextView.text = plank.height.toString()
+            binding.plankGroupTextView.text = plank.group
+            binding.plankTypeTextView.text = plank.type
         }
     }
 

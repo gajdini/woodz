@@ -7,6 +7,8 @@ import android.widget.SearchView
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.tooz.woodz.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -20,9 +22,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+            .findFragmentById(R.id.nav_fragment) as NavHostFragment
         navController = navHostFragment.navController
+        val bottomNavigationView = findViewById<BottomNavigationView
+                >(R.id.bottom_navigation_view)
         setupActionBarWithNavController(navController)
+        bottomNavigationView.setupWithNavController(navController)
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -30,11 +36,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.layout_menu, menu)
-        val search = menu.findItem(R.id.appSearchBar)
+        menuInflater.inflate(R.menu.top_menu, menu)
+        val search = menu.findItem(R.id.search_bar)
         val searchView = search?.actionView as SearchView
 
         searchView.queryHint = "Search"
+        searchView.maxWidth = Integer.MAX_VALUE
+
         return super.onCreateOptionsMenu(menu)
     }
 }
