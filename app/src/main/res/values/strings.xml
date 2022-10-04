@@ -9,4 +9,6 @@
     <string name="type">Type</string>
     <string name="group">Group</string>
     <string name="forward">Forward</string>
+    <string name="camera">Camera</string>
+    <string name="default_prompt_text">default text</string>
 </resources>

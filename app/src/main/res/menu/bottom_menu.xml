@@ -3,5 +3,5 @@
     <item
         android:id="@+id/camera"
         android:icon="@drawable/ic_photo_camera"
-        android:title="Camera" />
+        android:title="@string/camera" />
 </menu>
