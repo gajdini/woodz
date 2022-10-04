@@ -69,10 +69,7 @@ class MaterialFragment: Fragment() {
             view.findNavController().navigate(action)
         })
         recyclerView.adapter = materialAdapter
-        // submitList() is a call that accesses the database. To prevent the
-        // call from potentially locking the UI, you should use a
-        // coroutine scope to launch the function. Using GlobalScope is not
-        // best practice, and in the next step we'll see how to improve this.
+
         lifecycle.coroutineScope.launch {
             viewModel.materialsByProjectId(projectId).collect() {
                 materialAdapter.submitList(it)
