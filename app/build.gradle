@@ -68,4 +68,5 @@ dependencies {
     implementation ('tech.tooz.bto:toozifier:2.12.1@aar') { transitive = true }
 
     //barcode
+    implementation 'com.google.android.gms:play-services-vision:11.8.0'
 }
