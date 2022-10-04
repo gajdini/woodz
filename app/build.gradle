@@ -66,4 +66,6 @@ dependencies {
 
     //tooz
     implementation ('tech.tooz.bto:toozifier:2.12.1@aar') { transitive = true }
+
+    //barcode
 }

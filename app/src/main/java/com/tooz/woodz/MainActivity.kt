@@ -1,9 +1,10 @@
 package com.tooz.woodz
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.widget.SearchView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -29,6 +30,18 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController)
         bottomNavigationView.setupWithNavController(navController)
 
+        val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.camera -> {
+                    val intent = Intent(this, BarcodeScannerActivity::class.java)
+                    startActivity(intent)
+                    return@OnNavigationItemSelectedListener true
+                }
+            }
+            false
+        }
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
 
     override fun onSupportNavigateUp(): Boolean {
