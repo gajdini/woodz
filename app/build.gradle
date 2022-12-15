@@ -69,4 +69,5 @@ dependencies {
 
     //barcode
     implementation 'com.google.android.gms:play-services-vision:11.8.0'
+    implementation 'org.altbeacon:android-beacon-library:2.19.4'
 }
