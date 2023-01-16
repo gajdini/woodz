@@ -4,6 +4,7 @@ import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "material",
@@ -11,7 +12,8 @@ import androidx.room.PrimaryKey
         entity = Project::class,
         childColumns = ["project_id"],
         parentColumns = ["id"]
-    )])
+    )],
+    indices = [Index("project_id")])
 data class Material (
     @PrimaryKey(autoGenerate = true) val id: Int,
     @NonNull @ColumnInfo(name = "name") val name: String,

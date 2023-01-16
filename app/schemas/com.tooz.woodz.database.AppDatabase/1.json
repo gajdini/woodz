@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "aa2003c2f11669236ce2167d8a899b68",
+    "identityHash": "c00053abd1998b4677304c6d6d1f466a",
     "entities": [
       {
         "tableName": "project",
@@ -66,7 +66,17 @@
           ],
           "autoGenerate": true
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_material_project_id",
+            "unique": false,
+            "columnNames": [
+              "project_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_material_project_id` ON `${TABLE_NAME}` (`project_id`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "project",
@@ -83,7 +93,7 @@
       },
       {
         "tableName": "plank",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `width` REAL NOT NULL, `height` REAL NOT NULL, `group` TEXT NOT NULL, `type` TEXT NOT NULL, `material_id` INTEGER NOT NULL, `corner_left` REAL NOT NULL, `corner_right` REAL NOT NULL, `corner_bottom` REAL NOT NULL, `corner_up` REAL NOT NULL, FOREIGN KEY(`material_id`) REFERENCES `material`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `width` REAL NOT NULL, `height` REAL NOT NULL, `group` TEXT NOT NULL, `type` TEXT NOT NULL, `material_id` INTEGER NOT NULL, `corner_left` REAL NOT NULL, `corner_right` REAL NOT NULL, `corner_bottom` REAL NOT NULL, `corner_up` REAL NOT NULL, `barcode` TEXT, FOREIGN KEY(`material_id`) REFERENCES `material`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "id",
@@ -144,6 +154,12 @@
             "columnName": "corner_up",
             "affinity": "REAL",
             "notNull": true
+          },
+          {
+            "fieldPath": "barcode",
+            "columnName": "barcode",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -152,7 +168,17 @@
           ],
           "autoGenerate": true
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_plank_material_id",
+            "unique": false,
+            "columnNames": [
+              "material_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_plank_material_id` ON `${TABLE_NAME}` (`material_id`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "material",
@@ -171,7 +197,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'aa2003c2f11669236ce2167d8a899b68')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c00053abd1998b4677304c6d6d1f466a')"
     ]
   }
 }

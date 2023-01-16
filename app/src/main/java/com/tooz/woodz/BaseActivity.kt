@@ -52,9 +52,9 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (checkPermissions()) {
-            doBleScan()
-        }
+//        if (checkPermissions()) {
+//            doBleScan()
+//        }
     }
 
     private fun checkPermissions(): Boolean {
@@ -116,7 +116,6 @@ abstract class BaseActivity : AppCompatActivity() {
             Toast.LENGTH_SHORT).show()
 
         isScanning = true
-        var x: Positi
         bleScanner.startScan(null, scanSettings, scanCallback)
     }
 

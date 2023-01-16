@@ -13,6 +13,9 @@ interface PlankDao {
     @Query("SELECT * FROM  plank WHERE id = :id")
     fun getById(id: Int): Flow<Plank>
 
+    @Query("SELECT * FROM  plank WHERE barcode = :barcode")
+    fun getByBarcode(barcode: String): Flow<Plank>
+
     @Query("SELECT * FROM  plank WHERE material_id = :materialId")
     fun getAllByMaterial(materialId: Int): Flow<List<Plank>>
 }

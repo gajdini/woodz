@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 class PlankViewModel(private val plankDao: PlankDao): ViewModel(){
     fun plankById(id: Int): Flow<Plank> = plankDao.getById(id)
+    fun plankByBarcode(barcode: String): Flow<Plank> = plankDao.getByBarcode(barcode)
     fun planksByMaterialId(materialId: Int): Flow<List<Plank>> = plankDao.getAllByMaterial(materialId)
 }
 

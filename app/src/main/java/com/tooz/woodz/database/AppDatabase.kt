@@ -28,6 +28,7 @@ abstract class AppDatabase : RoomDatabase() {
                     "app_database"
                 )
                     .createFromAsset("database/woodz.db")
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
 
