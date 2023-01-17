@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c00053abd1998b4677304c6d6d1f466a",
+    "identityHash": "a86caef65f9620371b011867954fc498",
     "entities": [
       {
         "tableName": "project",
@@ -32,7 +32,7 @@
       },
       {
         "tableName": "material",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `quantity` INTEGER NOT NULL DEFAULT 1, `project_id` INTEGER NOT NULL, FOREIGN KEY(`project_id`) REFERENCES `project`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `quantity` INTEGER NOT NULL DEFAULT 1, `project_id` INTEGER NOT NULL, `planks` INTEGER NOT NULL, FOREIGN KEY(`project_id`) REFERENCES `project`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "id",
@@ -56,6 +56,12 @@
           {
             "fieldPath": "projectId",
             "columnName": "project_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "planks",
+            "columnName": "planks",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -197,7 +203,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c00053abd1998b4677304c6d6d1f466a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a86caef65f9620371b011867954fc498')"
     ]
   }
 }

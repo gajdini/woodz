@@ -18,5 +18,6 @@ data class Material (
     @PrimaryKey(autoGenerate = true) val id: Int,
     @NonNull @ColumnInfo(name = "name") val name: String,
     @NonNull @ColumnInfo(name = "quantity", defaultValue = "1") val quantity: Int,
-    @NonNull @ColumnInfo(name = "project_id") val projectId: Int
+    @NonNull @ColumnInfo(name = "project_id") val projectId: Int,
+    @NonNull @ColumnInfo(name = "planks") val planks: Int
 )

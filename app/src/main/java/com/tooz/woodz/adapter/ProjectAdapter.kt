@@ -2,9 +2,11 @@ package com.tooz.woodz.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.tooz.woodz.R
 import com.tooz.woodz.database.entity.Project
 import com.tooz.woodz.databinding.ProjectItemBinding
 
@@ -38,7 +40,8 @@ class ProjectAdapter(private val onItemClicked: (Project) -> Unit) : ListAdapter
                 false
             )
         )
-        viewHolder.itemView.setOnClickListener {
+        val nextButton = viewHolder.itemView.findViewById<ImageView>(R.id.next_to_materials)
+        nextButton.setOnClickListener {
             val position = viewHolder.adapterPosition
             onItemClicked(getItem(position))
         }
