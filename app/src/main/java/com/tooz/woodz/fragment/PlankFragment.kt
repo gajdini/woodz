@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +16,7 @@ import com.tooz.woodz.viewmodel.PlankViewModelFactory
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collect
 
-class PlankFragment: Fragment() {
+class PlankFragment: BaseToozifierFragment() {
 
     companion object {
         var MATERIAL_ID = "materialId"

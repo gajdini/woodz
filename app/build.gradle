@@ -70,4 +70,6 @@ dependencies {
     //barcode
     implementation 'com.google.android.gms:play-services-vision:11.8.0'
     implementation 'org.altbeacon:android-beacon-library:2.19.4'
+
+    implementation "androidx.fragment:fragment-ktx:1.4.1"
 }

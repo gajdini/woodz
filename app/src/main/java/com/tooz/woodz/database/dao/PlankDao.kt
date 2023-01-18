@@ -13,7 +13,7 @@ interface PlankDao {
     @Query("SELECT * FROM  plank WHERE id = :id")
     fun getById(id: Int): Flow<Plank>
 
-    @Query("SELECT * FROM  plank WHERE barcode = :barcode")
+    @Query("SELECT * FROM  plank WHERE barcode = :barcode LIMIT 1")
     fun getByBarcode(barcode: String): Flow<Plank>
 
     @Query("SELECT * FROM  plank WHERE material_id = :materialId")
