@@ -1,54 +1,48 @@
 package com.tooz.woodz.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.tooz.woodz.database.entity.Plank
-import com.tooz.woodz.databinding.PlankItemBinding
+import androidx.viewpager.widget.PagerAdapter
+import com.tooz.woodz.R
+import java.util.*
 
-class PlankAdapter(private val onItemClicked: (Plank) -> Unit) : ListAdapter<Plank, PlankAdapter.PlankViewHolder>(
-    DiffCallback
-) {
 
-    companion object {
-        private val DiffCallback = object : DiffUtil.ItemCallback<Plank>() {
-            override fun areItemsTheSame(oldItem: Plank, newItem: Plank): Boolean {
-                return oldItem.id == newItem.id
-            }
+class PlankAdapter(val context: Context, val plankList: List<Plank>) : PagerAdapter() {
 
-            override fun areContentsTheSame(oldItem: Plank, newItem: Plank): Boolean {
-                return oldItem == newItem
-            }
-        }
+    override fun getCount(): Int {
+        return plankList.size
     }
 
-    class PlankViewHolder(private var binding: PlankItemBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bind(plank: Plank) {
-            binding.plankWidthTextView.text = plank.width.toString()
-            binding.plankHeightTextView.text = plank.height.toString()
-            binding.plankGroupTextView.text = plank.group
-            binding.plankTypeTextView.text = plank.type
-        }
+    override fun isViewFromObject(view: View, `object`: Any): Boolean {
+        return view === `object` as LinearLayout
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlankViewHolder {
-        val viewHolder = PlankViewHolder(
-            PlankItemBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        )
-        viewHolder.itemView.setOnClickListener {
-            val position = viewHolder.adapterPosition
-            onItemClicked(getItem(position))
-        }
-        return viewHolder
+    override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
+        val itemView: View = layoutInflater.inflate(R.layout.plank_item2, container, false)
+
+        val plankWidthTextView: TextView = itemView.findViewById<TextView>(R.id.plank_width) as TextView
+        val plankHeightTextView: TextView = itemView.findViewById<TextView>(R.id.plank_height) as TextView
+        val plankTypeTextView: TextView = itemView.findViewById<TextView>(R.id.plank_type) as TextView
+        val plankGroupTextView: TextView = itemView.findViewById<TextView>(R.id.plank_group) as TextView
+
+        plankWidthTextView.text = plankList.get(position).width.toString()
+        plankHeightTextView.text = plankList.get(position).height.toString()
+        plankTypeTextView.text = plankList.get(position).type
+        plankGroupTextView.text = plankList.get(position).group
+
+        Objects.requireNonNull(container).addView(itemView)
+
+        return itemView
     }
 
-    override fun onBindViewHolder(holder: PlankViewHolder, position: Int) {
-        holder.bind(getItem(position))
+    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+        container.removeView(`object` as LinearLayout)
     }
 }

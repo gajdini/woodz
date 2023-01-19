@@ -52,9 +52,9 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (checkPermissions()) {
-            doBleScan()
-        }
+//        if (checkPermissions()) {
+//            doBleScan()
+//        }
     }
 
     private fun checkPermissions(): Boolean {

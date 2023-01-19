@@ -6,8 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.coroutineScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import com.tooz.woodz.WoodzApplication
 import com.tooz.woodz.adapter.PlankAdapter
 import com.tooz.woodz.databinding.PlankFragmentBinding
@@ -33,7 +32,7 @@ class PlankFragment: BaseToozifierFragment() {
 
     private val binding get() = _binding!!
 
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var viewPager: ViewPager
 
     private var materialId: Int = 0
 
@@ -60,14 +59,12 @@ class PlankFragment: BaseToozifierFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView = binding.recyclerView
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        val plankAdapter = PlankAdapter({})
-        recyclerView.adapter = plankAdapter
+        viewPager = binding.idViewPager
 
         lifecycle.coroutineScope.launch {
             viewModel.planksByMaterialId(materialId).collect() {
-                plankAdapter.submitList(it)
+                val plankAdapter = PlankAdapter(requireContext(), it)
+                viewPager.adapter = plankAdapter
             }
         }
     }
