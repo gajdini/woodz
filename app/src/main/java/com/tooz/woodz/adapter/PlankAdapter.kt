@@ -23,15 +23,16 @@ class PlankAdapter(val context: Context, val plankList: List<Plank>) : PagerAdap
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-
+        val layoutInflater = LayoutInflater.from(context);
         val itemView: View = layoutInflater.inflate(R.layout.plank_item2, container, false)
 
+        val plankNoTextView: TextView = itemView.findViewById<TextView>(R.id.plank_no) as TextView
         val plankWidthTextView: TextView = itemView.findViewById<TextView>(R.id.plank_width) as TextView
         val plankHeightTextView: TextView = itemView.findViewById<TextView>(R.id.plank_height) as TextView
         val plankTypeTextView: TextView = itemView.findViewById<TextView>(R.id.plank_type) as TextView
         val plankGroupTextView: TextView = itemView.findViewById<TextView>(R.id.plank_group) as TextView
 
+        plankNoTextView.text = (position + 1).toString()
         plankWidthTextView.text = plankList.get(position).width.toString()
         plankHeightTextView.text = plankList.get(position).height.toString()
         plankTypeTextView.text = plankList.get(position).type

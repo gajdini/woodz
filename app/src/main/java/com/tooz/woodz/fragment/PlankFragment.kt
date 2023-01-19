@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.coroutineScope
 import androidx.viewpager.widget.ViewPager
@@ -34,6 +35,10 @@ class PlankFragment: BaseToozifierFragment() {
 
     private lateinit var viewPager: ViewPager
 
+    private lateinit var previousButton: ImageView
+
+    private lateinit var nextButton: ImageView
+
     private var materialId: Int = 0
 
     private lateinit var materialName: String
@@ -60,6 +65,16 @@ class PlankFragment: BaseToozifierFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewPager = binding.idViewPager
+        previousButton = binding.previousPlank
+        nextButton = binding.nextPlank
+
+        previousButton.setOnClickListener{
+            viewPager.currentItem = viewPager.currentItem - 1
+        }
+
+        nextButton.setOnClickListener {
+            viewPager.currentItem = viewPager.currentItem + 1
+        }
 
         lifecycle.coroutineScope.launch {
             viewModel.planksByMaterialId(materialId).collect() {
