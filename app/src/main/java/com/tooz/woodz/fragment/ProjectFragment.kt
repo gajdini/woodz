@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.coroutineScope
 import androidx.navigation.findNavController
@@ -17,7 +18,7 @@ import com.tooz.woodz.viewmodel.ProjectViewModelFactory
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collect
 
-class ProjectFragment: BaseToozifierFragment() {
+class ProjectFragment: Fragment() {
 
     private var _binding: ProjectFragmentBinding? = null
 
@@ -56,12 +57,9 @@ class ProjectFragment: BaseToozifierFragment() {
                 projectAdapter.submitList(it)
             }
         }
-
-        registerToozer()
     }
 
     override fun onDestroyView() {
-        deregisterToozer()
         super.onDestroyView()
         _binding = null
     }

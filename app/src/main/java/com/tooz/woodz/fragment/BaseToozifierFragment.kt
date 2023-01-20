@@ -50,8 +50,8 @@ open class BaseToozifierFragment : Fragment() {
         }
     }
 
-    private fun setUpUi(){
-        promptView = layoutInflater.inflate(R.layout.layout_prompt, null)
+    fun setUpUi(){
+        promptView = layoutInflater.inflate(R.layout.plank_item2, null)
 
         toozifier.updateCard(
             promptView = promptView,

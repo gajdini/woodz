@@ -80,11 +80,13 @@ class PlankFragment: BaseToozifierFragment() {
             viewModel.planksByMaterialId(materialId).collect() {
                 val plankAdapter = PlankAdapter(requireContext(), it)
                 viewPager.adapter = plankAdapter
+                registerToozer()
             }
         }
     }
 
     override fun onDestroyView() {
+        deregisterToozer()
         super.onDestroyView()
         _binding = null
     }

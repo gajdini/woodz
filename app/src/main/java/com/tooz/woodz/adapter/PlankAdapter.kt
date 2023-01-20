@@ -26,11 +26,11 @@ class PlankAdapter(val context: Context, val plankList: List<Plank>) : PagerAdap
         val layoutInflater = LayoutInflater.from(context);
         val itemView: View = layoutInflater.inflate(R.layout.plank_item2, container, false)
 
-        val plankNoTextView: TextView = itemView.findViewById<TextView>(R.id.plank_no) as TextView
-        val plankWidthTextView: TextView = itemView.findViewById<TextView>(R.id.plank_width) as TextView
-        val plankHeightTextView: TextView = itemView.findViewById<TextView>(R.id.plank_height) as TextView
-        val plankTypeTextView: TextView = itemView.findViewById<TextView>(R.id.plank_type) as TextView
-        val plankGroupTextView: TextView = itemView.findViewById<TextView>(R.id.plank_group) as TextView
+        val plankNoTextView: TextView = itemView.findViewById(R.id.plank_no)
+        val plankWidthTextView: TextView = itemView.findViewById(R.id.plank_width)
+        val plankHeightTextView: TextView = itemView.findViewById(R.id.plank_height)
+        val plankTypeTextView: TextView = itemView.findViewById(R.id.plank_type)
+        val plankGroupTextView: TextView = itemView.findViewById(R.id.plank_group)
 
         plankNoTextView.text = (position + 1).toString()
         plankWidthTextView.text = plankList.get(position).width.toString()
