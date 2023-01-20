@@ -25,21 +25,21 @@ class MainActivity : BaseActivity() {
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_fragment) as NavHostFragment
         navController = navHostFragment.navController
-        val bottomNavigationView = findViewById<BottomNavigationView
-                >(R.id.bottom_navigation_view)
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation_view)
         setupActionBarWithNavController(navController)
         bottomNavigationView.setupWithNavController(navController)
 
-        val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.camera -> {
-                    val intent = Intent(this, BarcodeScannerActivity::class.java)
-                    startActivity(intent)
-                    return@OnNavigationItemSelectedListener true
+        val mOnNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.camera -> {
+                        val intent = Intent(this, BarcodeScannerActivity::class.java)
+                        startActivity(intent)
+                        return@OnNavigationItemSelectedListener true
+                    }
                 }
+                false
             }
-            false
-        }
 
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
