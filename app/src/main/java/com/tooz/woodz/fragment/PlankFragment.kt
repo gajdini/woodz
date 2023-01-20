@@ -15,6 +15,10 @@ import com.tooz.woodz.viewmodel.PlankViewModel
 import com.tooz.woodz.viewmodel.PlankViewModelFactory
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collect
+import timber.log.Timber
+import tooz.bto.toozifier.button.Button
+import tooz.bto.toozifier.button.ButtonEventListener
+
 
 class PlankFragment: BaseToozifierFragment() {
 
@@ -68,6 +72,9 @@ class PlankFragment: BaseToozifierFragment() {
         previousButton = binding.previousPlank
         nextButton = binding.nextPlank
 
+        toozifier.addListener(buttonEventListener)
+
+
         previousButton.setOnClickListener{
             viewPager.currentItem = viewPager.currentItem - 1
         }
@@ -82,6 +89,14 @@ class PlankFragment: BaseToozifierFragment() {
                 viewPager.adapter = plankAdapter
                 registerToozer()
             }
+        }
+    }
+
+    private val buttonEventListener = object : ButtonEventListener {
+
+        override fun onButtonEvent(button: Button) {
+            Timber.d("$TOOZ_EVENT Button event: $button")
+            viewPager.currentItem = viewPager.currentItem + 1
         }
     }
 
