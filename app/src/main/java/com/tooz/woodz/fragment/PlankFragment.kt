@@ -78,7 +78,7 @@ class PlankFragment: BaseToozifierFragment() {
 
         lifecycle.coroutineScope.launch {
             viewModel.planksByMaterialId(materialId).collect() {
-                val plankAdapter = PlankAdapter(requireContext(), it)
+                val plankAdapter = PlankAdapter(requireContext(), it, ::setUpUi)
                 viewPager.adapter = plankAdapter
                 registerToozer()
             }

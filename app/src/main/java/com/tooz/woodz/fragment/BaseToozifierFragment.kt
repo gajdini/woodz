@@ -33,7 +33,6 @@ open class BaseToozifierFragment : Fragment() {
     private val registrationListener = object : RegistrationListener {
 
         override fun onRegisterSuccess() {
-            setUpUi()
             Timber.d("$TOOZ_EVENT onRegisterSuccess")
         }
 
@@ -50,14 +49,14 @@ open class BaseToozifierFragment : Fragment() {
         }
     }
 
-    fun setUpUi(){
-        promptView = layoutInflater.inflate(R.layout.plank_item2, null)
-
-        toozifier.updateCard(
-            promptView = promptView,
-            focusView = promptView,
-            timeToLive = Constants.FRAME_TIME_TO_LIVE_FOREVER
-        )
+    fun setUpUi(view: View?) {
+        if (view != null) {
+            toozifier.updateCard(
+                promptView = view,
+                focusView = view,
+                timeToLive = Constants.FRAME_TIME_TO_LIVE_FOREVER
+            )
+        }
     }
 
     fun deregisterToozer() {

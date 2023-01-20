@@ -12,7 +12,11 @@ import com.tooz.woodz.R
 import java.util.*
 
 
-class PlankAdapter(val context: Context, val plankList: List<Plank>) : PagerAdapter() {
+class PlankAdapter(
+    val context: Context,
+    val plankList: List<Plank>,
+    val setUpUi: (promptView: View?) -> Unit
+) : PagerAdapter() {
 
     override fun getCount(): Int {
         return plankList.size
@@ -39,6 +43,14 @@ class PlankAdapter(val context: Context, val plankList: List<Plank>) : PagerAdap
         plankGroupTextView.text = plankList.get(position).group
 
         Objects.requireNonNull(container).addView(itemView)
+
+        if (position == 0) {
+            setUpUi(itemView)
+        } else {
+            setUpUi(
+                Objects.requireNonNull(container).getChildAt(container.indexOfChild(itemView) - 1)
+            )
+        }
 
         return itemView
     }
