@@ -2,9 +2,9 @@ package com.tooz.woodz
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.widget.SearchView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -34,6 +34,8 @@ class MainActivity : BaseActivity() {
                 when (item.itemId) {
                     R.id.camera -> {
                         val intent = Intent(this, BarcodeScannerActivity::class.java)
+                        Log.i("ScanCallback", "before barcode activity beaconAddress: {$nearestBeaconAddress}")
+                        intent.putExtra("beaconAddress", nearestBeaconAddress)
                         startActivity(intent)
                         return@OnNavigationItemSelectedListener true
                     }

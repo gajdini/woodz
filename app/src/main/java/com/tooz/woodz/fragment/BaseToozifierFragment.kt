@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import com.tooz.woodz.R
 import com.tooz.woodz.WoodzApplication
 import timber.log.Timber
-import tooz.bto.common.Constants
 import tooz.bto.toozifier.error.ErrorCause
 import tooz.bto.toozifier.registration.RegistrationListener
 
@@ -46,16 +45,6 @@ open class BaseToozifierFragment : Fragment() {
 
         override fun onRegisterFailure(errorCause: ErrorCause) {
             Timber.d("$TOOZ_EVENT onRegisterFailure $errorCause")
-        }
-    }
-
-    fun setUpUi(view: View?) {
-        if (view != null) {
-            toozifier.updateCard(
-                promptView = view,
-                focusView = view,
-                timeToLive = Constants.FRAME_TIME_TO_LIVE_FOREVER
-            )
         }
     }
 

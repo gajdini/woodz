@@ -1,6 +1,7 @@
 package com.tooz.woodz.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,9 +14,10 @@ import com.tooz.woodz.adapter.PlankAdapter
 import com.tooz.woodz.databinding.PlankFragmentBinding
 import com.tooz.woodz.viewmodel.PlankViewModel
 import com.tooz.woodz.viewmodel.PlankViewModelFactory
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import tooz.bto.common.Constants
 import tooz.bto.toozifier.button.Button
 import tooz.bto.toozifier.button.ButtonEventListener
 
@@ -26,6 +28,8 @@ class PlankFragment: BaseToozifierFragment() {
         var MATERIAL_ID = "materialId"
         var MATERIAL_NAME = "materialName"
     }
+
+    private var beaconAddress: String? = null
 
     private val viewModel: PlankViewModel by activityViewModels {
         PlankViewModelFactory(
@@ -54,6 +58,11 @@ class PlankFragment: BaseToozifierFragment() {
             materialId = it.getInt(MATERIAL_ID)
             materialName = it.getString(MATERIAL_NAME).toString()
         }
+
+        Log.i("ScanCallback", "in plank fragment arguments: {$arguments}")
+
+        val bundle = arguments
+        beaconAddress = bundle!!.getString("beaconAddress")
     }
 
     override fun onCreateView(
@@ -89,6 +98,18 @@ class PlankFragment: BaseToozifierFragment() {
                 viewPager.adapter = plankAdapter
                 registerToozer()
             }
+        }
+    }
+
+    fun setUpUi(view: View?) {
+        Log.i("ScanCallback", "in plank fragment beaconAddress: {$beaconAddress}")
+
+        if (view != null) {
+            toozifier.updateCard(
+                promptView = view,
+                focusView = view,
+                timeToLive = Constants.FRAME_TIME_TO_LIVE_FOREVER
+            )
         }
     }
 

@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanFilter
@@ -14,11 +13,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.tooz.woodz.fragment.PlankFragment
 import org.altbeacon.beacon.BeaconManager
 
 
@@ -30,7 +32,7 @@ abstract class BaseActivity : AppCompatActivity() {
     private var beaconManager: BeaconManager? = null
     private var filters: MutableList<ScanFilter> = mutableListOf()
     private val scanResults = mutableListOf<ScanResult>()
-    var nearestBeacon: BluetoothDevice? = null
+    var nearestBeaconAddress: String? = null
     private var isScanning = false
 
 
@@ -109,14 +111,14 @@ abstract class BaseActivity : AppCompatActivity() {
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             scanResults.add(result)
             scanResults.sortByDescending { it.rssi }
-            nearestBeacon = scanResults[0].device
+            nearestBeaconAddress = scanResults[0].device.address
 //            Log.i("ScanCallback",scanResults[0].toString())
-//            with(result.device) {
-//                Log.i(
-//                    "ScanCallback",
-//                    "Found BLE device! Name: ${name ?: "Unnamed"}, address: $address ${result.rssi} $"
-//                )
-//            }
+            with(result.device) {
+                Log.i(
+                    "bledevices",
+                    "Found BLE device! address: $address ${result.rssi} $"
+                )
+            }
         }
     }
 

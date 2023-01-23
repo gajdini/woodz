@@ -40,12 +40,18 @@ class BarcodeScannerActivity : AppCompatActivity() {
     private lateinit var plankViewFactory: PlankViewModelFactory
     private lateinit var plankViewModel: PlankViewModel
     protected val toozifier = WoodzApplication.getToozApplication().toozifier
-    private lateinit var promptView: View
+    private lateinit var plankDetailsView: View
+    private lateinit var plankCornerDetailsView: View
 
     var plankHeight: TextView? = null
     var plankWidth: TextView? = null
     var plankType: TextView? = null
     var plankGroup: TextView? = null
+
+    var plankLeftCorner: TextView? = null
+    var plankBottomCorner: TextView? = null
+    var plankRightCorner: TextView? = null
+    var plankUpCorner: TextView? = null
 
     fun registerToozer() {
         toozifier.register(
@@ -69,15 +75,26 @@ class BarcodeScannerActivity : AppCompatActivity() {
         }
 
         override fun onRegisterSuccess() {
-
-            toozifier.updateCard(
-                promptView = promptView,
-                focusView = promptView,
-                timeToLive = Constants.FRAME_TIME_TO_LIVE_FOREVER
-            )
+            val beaconAddress  = intent.getStringExtra("beaconAddress")
+            Log.i("ScanCallback", "in barcode activity beaconAddress: {$beaconAddress}")
+            when(beaconAddress) {
+                "AC:23:3F:88:10:53" -> {
+                    toozifier.updateCard(
+                        promptView = plankCornerDetailsView,
+                        focusView = plankCornerDetailsView,
+                        timeToLive = Constants.FRAME_TIME_TO_LIVE_FOREVER
+                    )
+                }
+                "AC:23:3F:88:10:57" -> {
+                    toozifier.updateCard(
+                        promptView = plankDetailsView,
+                        focusView = plankDetailsView,
+                        timeToLive = Constants.FRAME_TIME_TO_LIVE_FOREVER
+                    )
+                }
+            }
         }
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,12 +108,18 @@ class BarcodeScannerActivity : AppCompatActivity() {
     private fun initViews() {
         txtBarcodeValue = findViewById(R.id.txtBarcodeValue)
         surfaceView = findViewById(R.id.surfaceView)
-        promptView = layoutInflater.inflate(R.layout.plank_item2, null)
+        plankDetailsView = layoutInflater.inflate(R.layout.plank_item2, null)
+        plankCornerDetailsView = layoutInflater.inflate(R.layout.plank_item3, null)
 
-        plankHeight = promptView.findViewById(R.id.plank_height)
-        plankWidth = promptView.findViewById(R.id.plank_width)
-        plankGroup = promptView.findViewById(R.id.plank_group)
-        plankType = promptView.findViewById(R.id.plank_type)
+        plankHeight = plankDetailsView.findViewById(R.id.plank_height)
+        plankWidth = plankDetailsView.findViewById(R.id.plank_width)
+        plankGroup = plankDetailsView.findViewById(R.id.plank_group)
+        plankType = plankDetailsView.findViewById(R.id.plank_type)
+
+        plankLeftCorner = plankCornerDetailsView.findViewById(R.id.left_corner)
+        plankRightCorner = plankCornerDetailsView.findViewById(R.id.right_corner)
+        plankUpCorner = plankCornerDetailsView.findViewById(R.id.up_corner)
+        plankBottomCorner = plankCornerDetailsView.findViewById(R.id.bottom_corner)
     }
 
     private fun initialiseDetectorsAndSources() {
@@ -171,6 +194,11 @@ class BarcodeScannerActivity : AppCompatActivity() {
                     plankWidth?.text = it.width.toString()
                     plankType?.text = it.type
                     plankGroup?.text = it.group
+
+                    plankLeftCorner?.text = it.cornerLeft.toString()
+                    plankRightCorner?.text = it.cornerRight.toString()
+                    plankUpCorner?.text = it.cornerUp.toString()
+                    plankBottomCorner?.text = it.cornerBottom.toString()
 
                     registerToozer()
                 }
