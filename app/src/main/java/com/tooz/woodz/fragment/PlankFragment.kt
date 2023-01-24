@@ -35,7 +35,7 @@ class PlankFragment: BaseToozifierFragment() {
         var MATERIAL_NAME = "materialName"
     }
 
-    private var beaconAddress: MutableLiveData<String>? = null
+    private var machineId: MutableLiveData<Int>? = null
 
     private val viewModel: PlankViewModel by activityViewModels {
         PlankViewModelFactory(
@@ -69,11 +69,11 @@ class PlankFragment: BaseToozifierFragment() {
 
         val activity: MainActivity? = activity as MainActivity?
         if (activity != null) {
-            beaconAddress = activity.getBeaconAddress()
+            machineId = activity.getMachineId()
         }
 
-        beaconAddress?.observe(this, Observer<String>{
-            Log.i("ScanCallback", "in plank fragment beacon change: {${beaconAddress?.value}}")
+        machineId?.observe(this, Observer<Int>{
+            Log.i("ScanCallback", "in plank fragment beacon change: {${machineId?.value}}")
             viewPager.adapter?.instantiateItem(viewPager, 0)
             registerToozer()
         })
@@ -120,8 +120,8 @@ class PlankFragment: BaseToozifierFragment() {
     fun setUpUi(view: View?) {
 //        Log.i("ScanCallback", "in plank fragment beacon: {${beaconAddress?.value}}")
 
-        when(beaconAddress?.value){
-            "AC:23:3F:88:10:51" -> {
+        when(machineId?.value){
+            1 -> {
                 if (view != null){
                     toozifier.updateCard(
                         promptView = view,

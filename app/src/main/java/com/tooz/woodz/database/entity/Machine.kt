@@ -9,5 +9,5 @@ import androidx.room.PrimaryKey
 data class Machine (
     @PrimaryKey val id: Int,
     @NonNull @ColumnInfo(name = "name") val name: String,
-    @NonNull @ColumnInfo(name = "address") val address: Int,
+    @NonNull @ColumnInfo(name = "address") val address: String,
 )

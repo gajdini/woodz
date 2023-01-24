@@ -34,7 +34,6 @@ class MainActivity : BaseActivity() {
                 when (item.itemId) {
                     R.id.camera -> {
                         val intent = Intent(this, BarcodeScannerActivity::class.java)
-                        intent.putExtra("beaconAddress", nearestBeaconAddress.value)
                         startActivity(intent)
                         return@OnNavigationItemSelectedListener true
                     }

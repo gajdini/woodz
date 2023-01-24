@@ -94,11 +94,9 @@ class BarcodeScannerActivity : AppCompatActivity() {
                         barcodeValue = barcodes.valueAt(0).displayValue
 //                        txtBarcodeValue!!.text = barcodeValue
 
-                        val beacon = intent.getStringExtra("beaconAddress")
                         val intent =
                             Intent(this@BarcodeScannerActivity, ScannedPlankActivity::class.java)
                         intent.putExtra("barcode", barcodeValue)
-                        intent.putExtra("beaconAddress", beacon)
                         startActivity(intent)
                     }
                 }

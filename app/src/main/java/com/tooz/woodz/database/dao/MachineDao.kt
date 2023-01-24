@@ -10,6 +10,9 @@ interface MachineDao {
     @Query("SELECT * FROM  machine ORDER BY id ASC")
     fun getAll(): Flow<List<Machine>>
 
-    @Query("SELECT * FROM  machine WHERE address = :address LIMIT 1")
-    fun getByAddress(address: String): Flow<Machine>
+    @Query("SELECT address FROM  machine ORDER BY id ASC")
+    fun getAllAddresses(): Flow<List<String>>
+
+    @Query("SELECT id FROM  machine WHERE address = :address LIMIT 1")
+    fun getIdByAddress(address: String): Flow<Int>
 }

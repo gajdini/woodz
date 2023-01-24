@@ -47,14 +47,15 @@ class PlankAdapter(
 
         Objects.requireNonNull(container).addView(itemView)
 
-        setUpUi(itemView)
-//        if (position == 0) {
-//            setUpUi(itemView)
-//        } else {
-//            setUpUi(
-//                Objects.requireNonNull(container).getChildAt(container.indexOfChild(itemView) - 1)
-//            )
-//        }
+//        setUpUi(itemView)
+        //todo
+        if (position == 0) {
+            setUpUi(itemView)
+        } else {
+            setUpUi(
+                Objects.requireNonNull(container).getChildAt(position - 1)
+            )
+        }
 
         return itemView
     }

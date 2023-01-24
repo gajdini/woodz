@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.Flow
 
 class MachineViewModel(private val machineDao: MachineDao): ViewModel(){
     fun allMachines(): Flow<List<Machine>> = machineDao.getAll()
+    fun machineIdByAddress(address: String): Flow<Int> = machineDao.getIdByAddress(address)
+    fun allMachineAddresses(): Flow<List<String>> = machineDao.getAllAddresses()
 }
 
 class MachineViewModelFactory(private val machineDao: MachineDao): ViewModelProvider.Factory{

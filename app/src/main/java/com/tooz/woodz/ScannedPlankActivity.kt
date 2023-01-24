@@ -25,7 +25,6 @@ class ScannedPlankActivity : BaseActivity() {
     private lateinit var plankViewModel: PlankViewModel
 
     var barcodeValue = ""
-//    var beaconAddress = ""
     protected val toozifier = WoodzApplication.getToozApplication().toozifier
     private lateinit var plankDetailsView: View
     private lateinit var plankCornerDetailsView: View
@@ -44,8 +43,13 @@ class ScannedPlankActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        nearestMachineId.observe(this, Observer<Int> {
+            Log.i("ScanCallback", "in scanned plank activity beacon: {${nearestMachineId.value}}")
+            setUpActivityUI()
+            registerToozer()
+        })
+
         barcodeValue = intent.getStringExtra("barcode").toString()
-//        beaconAddress = intent.getStringExtra("beaconAddress").toString()
 
         plankViewFactory =
             PlankViewModelFactory((application as WoodzApplication).database.plankDao())
@@ -53,12 +57,8 @@ class ScannedPlankActivity : BaseActivity() {
         initViews()
         setContentView(defaultView)
         onBarcodeScanned()
-
-        nearestBeaconAddress.observe(this, Observer<String> {
-            Log.i("ScanCallback", "in scanned plank activity beacon: {${nearestBeaconAddress.value}}")
-            setUpActivityUI()
-            registerToozer()
-        })
+        setUpActivityUI()
+        registerToozer()
     }
 
     private fun initViews() {
@@ -78,12 +78,12 @@ class ScannedPlankActivity : BaseActivity() {
     }
 
     private fun setUpActivityUI() {
-        when (nearestBeaconAddress.value) {
-            "AC:23:3F:88:10:53" -> {
+        when (nearestMachineId.value) {
+            2 -> {
                 setContentView(plankCornerDetailsView)
 
             }
-            "AC:23:3F:88:10:57" -> {
+            3 -> {
                 setContentView(plankDetailsView)
             }
             else -> {
@@ -106,9 +106,6 @@ class ScannedPlankActivity : BaseActivity() {
                     plankRightCorner?.text = it.cornerRight.toString()
                     plankUpCorner?.text = it.cornerUp.toString()
                     plankBottomCorner?.text = it.cornerBottom.toString()
-
-                    setUpActivityUI()
-                    registerToozer()
                 }
             }
         }
@@ -136,12 +133,12 @@ class ScannedPlankActivity : BaseActivity() {
         }
 
         override fun onRegisterSuccess() {
-            when (nearestBeaconAddress.value) {
-                "AC:23:3F:88:10:53" -> {
+            when (nearestMachineId.value) {
+                2 -> {
                     setUpUI(plankCornerDetailsView)
 
                 }
-                "AC:23:3F:88:10:57" -> {
+               3 -> {
                     setUpUI(plankDetailsView)
                 }
                 else -> {
@@ -161,6 +158,11 @@ class ScannedPlankActivity : BaseActivity() {
 
     private fun deregisterToozer() {
         toozifier.deregister()
+    }
+
+    override fun onPause() {
+        deregisterToozer()
+        super.onPause()
     }
 
     override fun onDestroy() {

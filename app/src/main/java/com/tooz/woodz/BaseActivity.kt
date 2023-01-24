@@ -13,13 +13,20 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.Bundle
+import android.os.Handler
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.coroutineScope
+import com.tooz.woodz.viewmodel.MachineViewModel
+import com.tooz.woodz.viewmodel.MachineViewModelFactory
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.altbeacon.beacon.BeaconManager
 
 
@@ -27,15 +34,20 @@ private const val LOCATION_PERMISSION_REQUEST_CODE = 2
 
 abstract class BaseActivity : AppCompatActivity() {
 
-    private var addresses = arrayOf("AC:23:3F:88:10:51", "AC:23:3F:88:10:53", "AC:23:3F:88:10:57")
+    private var addresses = emptyList<String>()
+
+    private lateinit var machineViewFactory: MachineViewModelFactory
+    private lateinit var machineViewModel: MachineViewModel
+
     private var beaconManager: BeaconManager? = null
     private var filters: MutableList<ScanFilter> = mutableListOf()
     private val scanResults = mutableListOf<ScanResult>()
-    open var nearestBeaconAddress = MutableLiveData<String>()
+    open var nearestMachineId = MutableLiveData<Int>(4)
     private var isScanning = false
+    private var nearestAddress: String = ""
 
-    open fun getBeaconAddress(): MutableLiveData<String>? {
-        return nearestBeaconAddress
+    open fun getMachineId(): MutableLiveData<Int>? {
+        return nearestMachineId
     }
 
     private val bleScanner by lazy {
@@ -43,7 +55,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     private val scanSettings = ScanSettings.Builder()
-        .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+        .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
         .build()
 
     private val bluetoothAdapter: BluetoothAdapter by lazy {
@@ -54,11 +66,34 @@ abstract class BaseActivity : AppCompatActivity() {
     private val isLocationPermissionGranted
         get() = hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        machineViewFactory =
+            MachineViewModelFactory((application as WoodzApplication).database.machineDao())
+        machineViewModel =
+            ViewModelProvider(this, machineViewFactory).get(MachineViewModel::class.java)
+
+        lifecycle.coroutineScope.launch {
+            machineViewModel.allMachineAddresses().collect() {
+                addresses = it
+                setFilters()
+                if (checkPermissions()) {
+                    doBleScan()
+                }
+            }
+        }
+    }
+
+    private fun setFilters() {
+        for (i in addresses.indices) {
+            val filter = ScanFilter.Builder().setDeviceAddress(addresses[i]).build()
+            filters.add(filter)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
-        if (checkPermissions()) {
-            doBleScan()
-        }
     }
 
     private fun checkPermissions(): Boolean {
@@ -111,36 +146,60 @@ abstract class BaseActivity : AppCompatActivity() {
 
     private val scanCallback = object : ScanCallback() {
         override fun onScanResult(callbackType: Int, result: ScanResult) {
-            scanResults.add(result)
-            scanResults.sortByDescending { it.rssi }
-            if (nearestBeaconAddress.value != scanResults[0].device.address) {
-                nearestBeaconAddress.value = scanResults[0].device.address
-                Log.i(
-                    "ScanCallback",
-                    "Found BLE device changed! address: ${nearestBeaconAddress.value}"
-                )
+            val indexQuery = scanResults.indexOfFirst { it.device.address == result.device.address }
+            if (indexQuery != -1) {
+                scanResults[indexQuery] = result
+            } else {
+                scanResults.add(result)
             }
-//            Log.i("ScanCallback", "Searching $scanResults")
+        }
+
+        override fun onScanFailed(errorCode: Int) {
+            super.onScanFailed(errorCode)
+            Log.i("ScanCallback", "Error: $errorCode"
+            )
         }
     }
 
     private fun doBleScan() {
-        //todo delete
-        Toast.makeText(
-            this, "hey",
-            Toast.LENGTH_SHORT
-        ).show()
-
         scanResults.clear()
-
-        for (i in addresses.indices) {
-            val filter = ScanFilter.Builder().setDeviceAddress(addresses[i]).build()
-            filters.add(filter)
-        }
-
+        Handler().postDelayed({ doBleStop() }, 10000)
         bleScanner.startScan(filters, scanSettings, scanCallback)
+        Log.i("ScanCallback", "scan started and cleared")
         isScanning = true
     }
+
+    private fun doBleStop() {
+        scanResults.sortByDescending { it.rssi }
+        Log.i(
+            "ScanCallback",
+            "scan results: $scanResults"
+        )
+        //defaults if no machine detected
+        if (scanResults.isEmpty()){
+            nearestAddress = ""
+            nearestMachineId.value = 4
+        }
+        //then we have new nearest address
+        if (scanResults.isNotEmpty() && nearestAddress != scanResults[0].device.address) {
+            nearestAddress = scanResults[0].device.address
+
+            Log.i(
+                "ScanCallback",
+                "Found BLE device changed! address: ${nearestAddress}"
+            )
+            lifecycle.coroutineScope.launch {
+                machineViewModel.machineIdByAddress(nearestAddress).collect() {
+                    nearestMachineId.value = it
+                }
+            }
+        }
+        //stop scan and start again (every 10 seconds)
+        bleScanner.stopScan(scanCallback)
+        doBleScan()
+        isScanning = false
+    }
+
 
     private fun Context.hasPermission(permissionType: String): Boolean {
         return ContextCompat.checkSelfPermission(this, permissionType) ==
