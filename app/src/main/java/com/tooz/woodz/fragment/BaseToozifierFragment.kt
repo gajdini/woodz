@@ -56,9 +56,4 @@ open class BaseToozifierFragment : Fragment() {
         super.onResume()
         registerToozer()
     }
-
-    override fun onPause() {
-        super.onPause()
-        deregisterToozer()
-    }
 }

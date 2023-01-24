@@ -160,11 +160,6 @@ class ScannedPlankActivity : BaseActivity() {
         toozifier.deregister()
     }
 
-    override fun onPause() {
-        deregisterToozer()
-        super.onPause()
-    }
-
     override fun onDestroy() {
         deregisterToozer()
         super.onDestroy()

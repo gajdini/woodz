@@ -18,4 +18,7 @@ interface PlankDao {
 
     @Query("SELECT * FROM  plank WHERE material_id = :materialId")
     fun getAllByMaterial(materialId: Int): Flow<List<Plank>>
+
+    @Query("UPDATE plank SET done = 1 WHERE id = :id")
+    fun setDone(id: Int)
 }

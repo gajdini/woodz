@@ -6,12 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.view.get
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.coroutineScope
-import androidx.lifecycle.observe
+import androidx.lifecycle.*
 import androidx.viewpager.widget.ViewPager
 import com.tooz.woodz.MainActivity
 import com.tooz.woodz.R
@@ -34,6 +31,9 @@ class PlankFragment: BaseToozifierFragment() {
         var MATERIAL_ID = "materialId"
         var MATERIAL_NAME = "materialName"
     }
+
+    private lateinit var plankViewFactory: PlankViewModelFactory
+    private lateinit var plankViewModel: PlankViewModel
 
     private var machineId: MutableLiveData<Int>? = null
 
@@ -66,6 +66,10 @@ class PlankFragment: BaseToozifierFragment() {
             materialId = it.getInt(MATERIAL_ID)
             materialName = it.getString(MATERIAL_NAME).toString()
         }
+
+        plankViewFactory =
+            PlankViewModelFactory((activity?.application as WoodzApplication).database.plankDao())
+        plankViewModel = ViewModelProvider(this, plankViewFactory).get(PlankViewModel::class.java)
 
         val activity: MainActivity? = activity as MainActivity?
         if (activity != null) {
@@ -117,18 +121,15 @@ class PlankFragment: BaseToozifierFragment() {
         }
     }
 
-    fun setUpUi(view: View?) {
-//        Log.i("ScanCallback", "in plank fragment beacon: {${beaconAddress?.value}}")
-
+    fun setUpUi() {
         when(machineId?.value){
             1 -> {
-                if (view != null){
-                    toozifier.updateCard(
-                        promptView = view,
-                        focusView = view,
-                        timeToLive = Constants.FRAME_TIME_TO_LIVE_FOREVER
-                    )
-                }
+                Log.i("ScanCallback", "in plank fragment view id: ${viewPager.currentItem}")
+                toozifier.updateCard(
+                    promptView = viewPager.get(viewPager.currentItem),
+                    focusView = viewPager.get(viewPager.currentItem),
+                    timeToLive = Constants.FRAME_TIME_TO_LIVE_FOREVER
+                )
             }
             else -> {
                 toozifier.updateCard(

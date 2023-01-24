@@ -27,4 +27,5 @@ data class Plank (
     @NonNull @ColumnInfo(name = "corner_bottom") val cornerBottom: Double,
     @NonNull @ColumnInfo(name = "corner_up") val cornerUp: Double,
     @Nullable @ColumnInfo(name = "barcode") val barcode: String?,
+    @NonNull @ColumnInfo(name = "done",  defaultValue = "0") val done: Boolean,
 )

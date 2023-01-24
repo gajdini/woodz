@@ -7,16 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.tooz.woodz.database.entity.Plank
 import androidx.viewpager.widget.PagerAdapter
 import com.tooz.woodz.R
+import com.tooz.woodz.database.entity.Plank
 import java.util.*
 
 
 class PlankAdapter(
     val context: Context,
     val plankList: List<Plank>,
-    val setUpUi: (promptView: View?) -> Unit
+    val setUpUi: () -> Unit
 ) : PagerAdapter() {
 
     override fun getCount(): Int {
@@ -47,20 +47,11 @@ class PlankAdapter(
 
         Objects.requireNonNull(container).addView(itemView)
 
-//        setUpUi(itemView)
-        //todo
-        if (position == 0) {
-            setUpUi(itemView)
-        } else {
-            setUpUi(
-                Objects.requireNonNull(container).getChildAt(position - 1)
-            )
-        }
+        setUpUi()
 
         return itemView
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-        container.removeView(`object` as LinearLayout)
     }
 }

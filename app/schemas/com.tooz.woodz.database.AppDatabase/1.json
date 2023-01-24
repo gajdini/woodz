@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "57536c39d43430f629767121bd085a70",
+    "identityHash": "755875f52fa8a8ce2b9837ac583c8f79",
     "entities": [
       {
         "tableName": "project",
@@ -99,7 +99,7 @@
       },
       {
         "tableName": "plank",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `width` REAL NOT NULL, `height` REAL NOT NULL, `group` TEXT NOT NULL, `type` TEXT NOT NULL, `material_id` INTEGER NOT NULL, `corner_left` REAL NOT NULL, `corner_right` REAL NOT NULL, `corner_bottom` REAL NOT NULL, `corner_up` REAL NOT NULL, `barcode` TEXT, FOREIGN KEY(`material_id`) REFERENCES `material`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `width` REAL NOT NULL, `height` REAL NOT NULL, `group` TEXT NOT NULL, `type` TEXT NOT NULL, `material_id` INTEGER NOT NULL, `corner_left` REAL NOT NULL, `corner_right` REAL NOT NULL, `corner_bottom` REAL NOT NULL, `corner_up` REAL NOT NULL, `barcode` TEXT, `done` INTEGER NOT NULL DEFAULT 0, FOREIGN KEY(`material_id`) REFERENCES `material`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "id",
@@ -166,6 +166,13 @@
             "columnName": "barcode",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "done",
+            "columnName": "done",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
           }
         ],
         "primaryKey": {
@@ -235,7 +242,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '57536c39d43430f629767121bd085a70')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '755875f52fa8a8ce2b9837ac583c8f79')"
     ]
   }
 }
