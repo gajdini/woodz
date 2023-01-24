@@ -6,9 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.observe
 import androidx.viewpager.widget.ViewPager
+import com.tooz.woodz.MainActivity
+import com.tooz.woodz.R
 import com.tooz.woodz.WoodzApplication
 import com.tooz.woodz.adapter.PlankAdapter
 import com.tooz.woodz.databinding.PlankFragmentBinding
@@ -29,7 +35,7 @@ class PlankFragment: BaseToozifierFragment() {
         var MATERIAL_NAME = "materialName"
     }
 
-    private var beaconAddress: String? = null
+    private var beaconAddress: MutableLiveData<String>? = null
 
     private val viewModel: PlankViewModel by activityViewModels {
         PlankViewModelFactory(
@@ -47,6 +53,8 @@ class PlankFragment: BaseToozifierFragment() {
 
     private lateinit var nextButton: ImageView
 
+    private lateinit var defaultView: View
+
     private var materialId: Int = 0
 
     private lateinit var materialName: String
@@ -59,10 +67,16 @@ class PlankFragment: BaseToozifierFragment() {
             materialName = it.getString(MATERIAL_NAME).toString()
         }
 
-        Log.i("ScanCallback", "in plank fragment arguments: {$arguments}")
+        val activity: MainActivity? = activity as MainActivity?
+        if (activity != null) {
+            beaconAddress = activity.getBeaconAddress()
+        }
 
-        val bundle = arguments
-        beaconAddress = bundle!!.getString("beaconAddress")
+        beaconAddress?.observe(this, Observer<String>{
+            Log.i("ScanCallback", "in plank fragment beacon change: {${beaconAddress?.value}}")
+            viewPager.adapter?.instantiateItem(viewPager, 0)
+            registerToozer()
+        })
     }
 
     override fun onCreateView(
@@ -80,6 +94,8 @@ class PlankFragment: BaseToozifierFragment() {
         viewPager = binding.idViewPager
         previousButton = binding.previousPlank
         nextButton = binding.nextPlank
+        defaultView = layoutInflater.inflate(R.layout.layout_prompt, null)
+
 
         toozifier.addListener(buttonEventListener)
 
@@ -102,14 +118,25 @@ class PlankFragment: BaseToozifierFragment() {
     }
 
     fun setUpUi(view: View?) {
-        Log.i("ScanCallback", "in plank fragment beaconAddress: {$beaconAddress}")
+//        Log.i("ScanCallback", "in plank fragment beacon: {${beaconAddress?.value}}")
 
-        if (view != null) {
-            toozifier.updateCard(
-                promptView = view,
-                focusView = view,
-                timeToLive = Constants.FRAME_TIME_TO_LIVE_FOREVER
-            )
+        when(beaconAddress?.value){
+            "AC:23:3F:88:10:51" -> {
+                if (view != null){
+                    toozifier.updateCard(
+                        promptView = view,
+                        focusView = view,
+                        timeToLive = Constants.FRAME_TIME_TO_LIVE_FOREVER
+                    )
+                }
+            }
+            else -> {
+                toozifier.updateCard(
+                    promptView = defaultView,
+                    focusView = defaultView,
+                    timeToLive = Constants.FRAME_TIME_TO_LIVE_FOREVER
+                )
+            }
         }
     }
 

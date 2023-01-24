@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
 import com.tooz.woodz.database.entity.Plank
@@ -18,16 +19,17 @@ import tooz.bto.common.Constants
 import tooz.bto.toozifier.error.ErrorCause
 import tooz.bto.toozifier.registration.RegistrationListener
 
-class ScannedPlankActivity : AppCompatActivity() {
+class ScannedPlankActivity : BaseActivity() {
 
     private lateinit var plankViewFactory: PlankViewModelFactory
     private lateinit var plankViewModel: PlankViewModel
 
     var barcodeValue = ""
-    var beaconAddress = ""
+//    var beaconAddress = ""
     protected val toozifier = WoodzApplication.getToozApplication().toozifier
     private lateinit var plankDetailsView: View
     private lateinit var plankCornerDetailsView: View
+    private lateinit var defaultView: View
 
     var plankHeight: TextView? = null
     var plankWidth: TextView? = null
@@ -43,18 +45,26 @@ class ScannedPlankActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         barcodeValue = intent.getStringExtra("barcode").toString()
-        beaconAddress = intent.getStringExtra("beaconAddress").toString()
+//        beaconAddress = intent.getStringExtra("beaconAddress").toString()
 
         plankViewFactory =
             PlankViewModelFactory((application as WoodzApplication).database.plankDao())
         plankViewModel = ViewModelProvider(this, plankViewFactory).get(PlankViewModel::class.java)
         initViews()
+        setContentView(defaultView)
         onBarcodeScanned()
+
+        nearestBeaconAddress.observe(this, Observer<String> {
+            Log.i("ScanCallback", "in scanned plank activity beacon: {${nearestBeaconAddress.value}}")
+            setUpActivityUI()
+            registerToozer()
+        })
     }
 
     private fun initViews() {
         plankDetailsView = layoutInflater.inflate(R.layout.plank_item2, null)
         plankCornerDetailsView = layoutInflater.inflate(R.layout.plank_item3, null)
+        defaultView = layoutInflater.inflate(R.layout.layout_prompt, null)
 
         plankHeight = plankDetailsView.findViewById(R.id.plank_height)
         plankWidth = plankDetailsView.findViewById(R.id.plank_width)
@@ -68,13 +78,16 @@ class ScannedPlankActivity : AppCompatActivity() {
     }
 
     private fun setUpActivityUI() {
-        when (beaconAddress) {
+        when (nearestBeaconAddress.value) {
             "AC:23:3F:88:10:53" -> {
                 setContentView(plankCornerDetailsView)
 
             }
             "AC:23:3F:88:10:57" -> {
                 setContentView(plankDetailsView)
+            }
+            else -> {
+                setContentView(defaultView)
             }
         }
     }
@@ -123,13 +136,16 @@ class ScannedPlankActivity : AppCompatActivity() {
         }
 
         override fun onRegisterSuccess() {
-            when (beaconAddress) {
+            when (nearestBeaconAddress.value) {
                 "AC:23:3F:88:10:53" -> {
                     setUpUI(plankCornerDetailsView)
 
                 }
                 "AC:23:3F:88:10:57" -> {
                     setUpUI(plankDetailsView)
+                }
+                else -> {
+                    setUpUI(defaultView)
                 }
             }
         }

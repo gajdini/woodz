@@ -19,6 +19,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.MutableLiveData
 import org.altbeacon.beacon.BeaconManager
 
 
@@ -30,9 +31,12 @@ abstract class BaseActivity : AppCompatActivity() {
     private var beaconManager: BeaconManager? = null
     private var filters: MutableList<ScanFilter> = mutableListOf()
     private val scanResults = mutableListOf<ScanResult>()
-    var nearestBeaconAddress: String? = null
+    open var nearestBeaconAddress = MutableLiveData<String>()
     private var isScanning = false
 
+    open fun getBeaconAddress(): MutableLiveData<String>? {
+        return nearestBeaconAddress
+    }
 
     private val bleScanner by lazy {
         bluetoothAdapter.bluetoothLeScanner
@@ -109,14 +113,14 @@ abstract class BaseActivity : AppCompatActivity() {
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             scanResults.add(result)
             scanResults.sortByDescending { it.rssi }
-            nearestBeaconAddress = scanResults[0].device.address
-//            Log.i("ScanCallback",scanResults[0].toString())
-            with(result.device) {
+            if (nearestBeaconAddress.value != scanResults[0].device.address) {
+                nearestBeaconAddress.value = scanResults[0].device.address
                 Log.i(
-                    "bledevices",
-                    "Found BLE device! address: $address ${result.rssi} $"
+                    "ScanCallback",
+                    "Found BLE device changed! address: ${nearestBeaconAddress.value}"
                 )
             }
+//            Log.i("ScanCallback", "Searching $scanResults")
         }
     }
 

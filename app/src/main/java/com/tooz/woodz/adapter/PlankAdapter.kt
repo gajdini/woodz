@@ -1,6 +1,7 @@
 package com.tooz.woodz.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +28,8 @@ class PlankAdapter(
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        Log.i("ScanCallback", "hererere $position")
+
         val layoutInflater = LayoutInflater.from(context);
         val itemView: View = layoutInflater.inflate(R.layout.plank_item2, container, false)
 
@@ -44,13 +47,14 @@ class PlankAdapter(
 
         Objects.requireNonNull(container).addView(itemView)
 
-        if (position == 0) {
-            setUpUi(itemView)
-        } else {
-            setUpUi(
-                Objects.requireNonNull(container).getChildAt(container.indexOfChild(itemView) - 1)
-            )
-        }
+        setUpUi(itemView)
+//        if (position == 0) {
+//            setUpUi(itemView)
+//        } else {
+//            setUpUi(
+//                Objects.requireNonNull(container).getChildAt(container.indexOfChild(itemView) - 1)
+//            )
+//        }
 
         return itemView
     }
