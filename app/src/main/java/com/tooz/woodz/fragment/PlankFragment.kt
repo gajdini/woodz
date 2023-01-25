@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.view.get
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.*
@@ -17,7 +18,7 @@ import com.tooz.woodz.adapter.PlankAdapter
 import com.tooz.woodz.databinding.PlankFragmentBinding
 import com.tooz.woodz.viewmodel.PlankViewModel
 import com.tooz.woodz.viewmodel.PlankViewModelFactory
-import kotlinx.coroutines.flow.collect
+import androidx.lifecycle.Observer
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import tooz.bto.common.Constants
@@ -33,9 +34,6 @@ class PlankFragment: BaseToozifierFragment() {
         var MATERIAL_ID = "materialId"
         var MATERIAL_NAME = "materialName"
     }
-
-    private lateinit var plankViewFactory: PlankViewModelFactory
-    private lateinit var plankViewModel: PlankViewModel
 
     private var machineId: MutableLiveData<Int>? = null
 
@@ -69,14 +67,15 @@ class PlankFragment: BaseToozifierFragment() {
             materialName = it.getString(MATERIAL_NAME).toString()
         }
 
-        plankViewFactory =
-            PlankViewModelFactory((activity?.application as WoodzApplication).database.plankDao())
-        plankViewModel = ViewModelProvider(this, plankViewFactory).get(PlankViewModel::class.java)
-
         val activity: MainActivity? = activity as MainActivity?
         if (activity != null) {
             machineId = activity.getMachineId()
         }
+
+        machineId?.observe(this, Observer<Int>{
+            Log.i("ScanCallback", "in plank fragment beacon change: {${machineId?.value}}")
+            registerToozer()
+        })
     }
 
     override fun onCreateView(
@@ -96,9 +95,7 @@ class PlankFragment: BaseToozifierFragment() {
         nextButton = binding.nextPlank
         defaultView = layoutInflater.inflate(R.layout.layout_prompt, null)
 
-
         toozifier.addListener(buttonEventListener)
-
 
         previousButton.setOnClickListener{
             viewPager.currentItem = viewPager.currentItem - 1
@@ -109,11 +106,10 @@ class PlankFragment: BaseToozifierFragment() {
         }
 
         lifecycle.coroutineScope.launch {
-            viewModel.planksByMaterialId(materialId).collect() {
-                val plankAdapter = PlankAdapter(requireContext(), it, ::setUpUi)
-                viewPager.adapter = plankAdapter
-                registerToozer()
-            }
+            val planks = viewModel.planksByMaterialId(materialId)
+            val plankAdapter = PlankAdapter(requireContext(), planks, ::setUpUi)
+            viewPager.adapter = plankAdapter
+            registerToozer()
         }
     }
 
@@ -159,7 +155,6 @@ class PlankFragment: BaseToozifierFragment() {
             }
             else -> {
                 Log.i("ScanCallback", "in elseeee")
-
                 toozifier.updateCard(
                     promptView = defaultView,
                     focusView = defaultView,
@@ -173,7 +168,11 @@ class PlankFragment: BaseToozifierFragment() {
 
         override fun onButtonEvent(button: Button) {
             Timber.d("$TOOZ_EVENT Button event: $button")
+            val plankId = viewPager.get(viewPager.currentItem).findViewById<TextView>(R.id.plank_id).text.toString().toInt()
             viewPager.currentItem = viewPager.currentItem + 1
+            lifecycle.coroutineScope.launch {
+                viewModel.plankIsDone(plankId)
+            }
         }
     }
 
@@ -181,10 +180,5 @@ class PlankFragment: BaseToozifierFragment() {
         deregisterToozer()
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onResume() {
-        super.onResume()
-        registerToozer()
     }
 }

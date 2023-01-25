@@ -17,8 +17,8 @@ interface PlankDao {
     fun getByBarcode(barcode: String): Flow<Plank>
 
     @Query("SELECT * FROM  plank WHERE material_id = :materialId")
-    fun getAllByMaterial(materialId: Int): Flow<List<Plank>>
+    suspend fun getAllByMaterial(materialId: Int): List<Plank>
 
     @Query("UPDATE plank SET done = 1 WHERE id = :id")
-    fun setDone(id: Int)
+    suspend fun setDone(id: Int)
 }
