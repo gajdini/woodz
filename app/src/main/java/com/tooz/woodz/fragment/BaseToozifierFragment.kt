@@ -1,12 +1,7 @@
 package com.tooz.woodz.fragment
 
-import android.view.View
 import androidx.fragment.app.Fragment
-import com.tooz.woodz.R
 import com.tooz.woodz.WoodzApplication
-import timber.log.Timber
-import tooz.bto.toozifier.error.ErrorCause
-import tooz.bto.toozifier.registration.RegistrationListener
 
 open class BaseToozifierFragment : Fragment() {
 
@@ -17,43 +12,9 @@ open class BaseToozifierFragment : Fragment() {
         const val BUTTON_EVENT = "Button event:"
     }
 
-    private lateinit var promptView: View
-
     protected val toozifier = WoodzApplication.getToozApplication().toozifier
-
-    fun registerToozer() {
-        toozifier.register(
-            requireContext(),
-            getString(R.string.app_name),
-            registrationListener
-        )
-    }
-
-    private val registrationListener = object : RegistrationListener {
-
-        override fun onRegisterSuccess() {
-            Timber.d("$TOOZ_EVENT onRegisterSuccess")
-        }
-
-        override fun onDeregisterFailure(errorCause: ErrorCause) {
-            Timber.d("$TOOZ_EVENT onDeregisterFailure $errorCause")
-        }
-
-        override fun onDeregisterSuccess() {
-            Timber.d("$TOOZ_EVENT onDeregisterSuccess")
-        }
-
-        override fun onRegisterFailure(errorCause: ErrorCause) {
-            Timber.d("$TOOZ_EVENT onRegisterFailure $errorCause")
-        }
-    }
 
     fun deregisterToozer() {
         toozifier.deregister()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        registerToozer()
     }
 }

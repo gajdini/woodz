@@ -1,6 +1,5 @@
 package com.tooz.woodz
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -9,7 +8,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
 import com.tooz.woodz.database.entity.Plank
-import com.tooz.woodz.fragment.BaseToozifierFragment
 import com.tooz.woodz.viewmodel.PlankViewModel
 import com.tooz.woodz.viewmodel.PlankViewModelFactory
 import kotlinx.coroutines.flow.collect
@@ -20,6 +18,13 @@ import tooz.bto.toozifier.error.ErrorCause
 import tooz.bto.toozifier.registration.RegistrationListener
 
 class ScannedPlankActivity : BaseActivity() {
+
+    companion object {
+        const val TOOZ_EVENT = "Tooz event:"
+        const val WATCH_EVENT = "Watch event:"
+        const val SENSOR_EVENT = "Sensor event:"
+        const val BUTTON_EVENT = "Button event:"
+    }
 
     private lateinit var plankViewFactory: PlankViewModelFactory
     private lateinit var plankViewModel: PlankViewModel
@@ -121,15 +126,15 @@ class ScannedPlankActivity : BaseActivity() {
 
     private val registrationListener = object : RegistrationListener {
         override fun onDeregisterFailure(errorCause: ErrorCause) {
-            Timber.d("${BaseToozifierFragment.TOOZ_EVENT} onDeregisterFailure $errorCause")
+            Timber.d("$TOOZ_EVENT onDeregisterFailure $errorCause")
         }
 
         override fun onDeregisterSuccess() {
-            Timber.d("${BaseToozifierFragment.TOOZ_EVENT} onDeregisterSuccess")
+            Timber.d("$TOOZ_EVENT onDeregisterSuccess")
         }
 
         override fun onRegisterFailure(errorCause: ErrorCause) {
-            Timber.d("${BaseToozifierFragment.TOOZ_EVENT} onRegisterFailure $errorCause")
+            Timber.d("$TOOZ_EVENT onRegisterFailure $errorCause")
         }
 
         override fun onRegisterSuccess() {

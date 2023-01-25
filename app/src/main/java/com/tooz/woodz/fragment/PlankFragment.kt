@@ -23,6 +23,8 @@ import timber.log.Timber
 import tooz.bto.common.Constants
 import tooz.bto.toozifier.button.Button
 import tooz.bto.toozifier.button.ButtonEventListener
+import tooz.bto.toozifier.error.ErrorCause
+import tooz.bto.toozifier.registration.RegistrationListener
 
 
 class PlankFragment: BaseToozifierFragment() {
@@ -75,12 +77,6 @@ class PlankFragment: BaseToozifierFragment() {
         if (activity != null) {
             machineId = activity.getMachineId()
         }
-
-        machineId?.observe(this, Observer<Int>{
-            Log.i("ScanCallback", "in plank fragment beacon change: {${machineId?.value}}")
-            viewPager.adapter?.instantiateItem(viewPager, 0)
-            registerToozer()
-        })
     }
 
     override fun onCreateView(
@@ -121,7 +117,37 @@ class PlankFragment: BaseToozifierFragment() {
         }
     }
 
+    fun registerToozer() {
+        toozifier.register(
+            requireContext(),
+            getString(R.string.app_name),
+            registrationListener
+        )
+    }
+
+    private val registrationListener = object : RegistrationListener {
+
+        override fun onRegisterSuccess() {
+            Timber.d("$TOOZ_EVENT onRegisterSuccess")
+            setUpUi()
+        }
+
+        override fun onDeregisterFailure(errorCause: ErrorCause) {
+            Timber.d("$TOOZ_EVENT onDeregisterFailure $errorCause")
+        }
+
+        override fun onDeregisterSuccess() {
+            Timber.d("$TOOZ_EVENT onDeregisterSuccess")
+        }
+
+        override fun onRegisterFailure(errorCause: ErrorCause) {
+            Timber.d("$TOOZ_EVENT onRegisterFailure $errorCause")
+        }
+    }
+
     fun setUpUi() {
+        Log.i("ScanCallback", "machine id: ${machineId?.value}")
+
         when(machineId?.value){
             1 -> {
                 Log.i("ScanCallback", "in plank fragment view id: ${viewPager.currentItem}")
@@ -132,6 +158,8 @@ class PlankFragment: BaseToozifierFragment() {
                 )
             }
             else -> {
+                Log.i("ScanCallback", "in elseeee")
+
                 toozifier.updateCard(
                     promptView = defaultView,
                     focusView = defaultView,
@@ -153,5 +181,10 @@ class PlankFragment: BaseToozifierFragment() {
         deregisterToozer()
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        registerToozer()
     }
 }

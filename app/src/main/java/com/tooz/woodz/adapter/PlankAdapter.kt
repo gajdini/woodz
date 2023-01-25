@@ -28,7 +28,7 @@ class PlankAdapter(
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        Log.i("ScanCallback", "hererere $position")
+        Log.i("ScanCallback", "in plank adapter $position")
 
         val layoutInflater = LayoutInflater.from(context);
         val itemView: View = layoutInflater.inflate(R.layout.plank_item2, container, false)
