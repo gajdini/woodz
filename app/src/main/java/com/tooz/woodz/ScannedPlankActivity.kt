@@ -35,6 +35,8 @@ class ScannedPlankActivity : BaseActivity() {
     private lateinit var plankCornerDetailsView: View
     private lateinit var defaultView: View
 
+    private lateinit var observer: Observer<Int>
+
     var plankHeight: TextView? = null
     var plankWidth: TextView? = null
     var plankType: TextView? = null
@@ -48,12 +50,6 @@ class ScannedPlankActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        nearestMachineId.observe(this, Observer<Int> {
-            Log.i("ScanCallback", "in scanned plank activity beacon: {${nearestMachineId.value}}")
-            setUpActivityUI()
-            registerToozer()
-        })
-
         barcodeValue = intent.getStringExtra("barcode").toString()
 
         plankViewFactory =
@@ -64,6 +60,14 @@ class ScannedPlankActivity : BaseActivity() {
         onBarcodeScanned()
         setUpActivityUI()
         registerToozer()
+
+        observer = Observer{
+            Log.i("ScanCallback", "in scanned plank activity beacon: {${nearestMachineId.value}}")
+            setUpActivityUI()
+            registerToozer()
+        }
+
+        nearestMachineId.observeForever( observer)
     }
 
     private fun initViews() {
@@ -167,6 +171,7 @@ class ScannedPlankActivity : BaseActivity() {
 
     override fun onDestroy() {
         deregisterToozer()
+        nearestMachineId.removeObserver(observer)
         super.onDestroy()
     }
 }

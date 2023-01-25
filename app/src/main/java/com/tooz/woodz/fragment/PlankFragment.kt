@@ -28,7 +28,7 @@ import tooz.bto.toozifier.error.ErrorCause
 import tooz.bto.toozifier.registration.RegistrationListener
 
 
-class PlankFragment: BaseToozifierFragment() {
+class PlankFragment : BaseToozifierFragment() {
 
     companion object {
         var MATERIAL_ID = "materialId"
@@ -46,6 +46,10 @@ class PlankFragment: BaseToozifierFragment() {
     private var _binding: PlankFragmentBinding? = null
 
     private val binding get() = _binding!!
+
+    private lateinit var mainActivity: MainActivity
+
+    private lateinit var observer: Observer<Int>
 
     private lateinit var viewPager: ViewPager
 
@@ -67,15 +71,18 @@ class PlankFragment: BaseToozifierFragment() {
             materialName = it.getString(MATERIAL_NAME).toString()
         }
 
-        val activity: MainActivity? = activity as MainActivity?
-        if (activity != null) {
-            machineId = activity.getMachineId()
+        mainActivity = activity as MainActivity
+
+        observer = Observer{
+            Log.i("ScanCallback", "in plank fragment beacon change: {${mainActivity.nearestMachineId.value}}")
+            if (toozifier.isRegistered) {
+                setUpUi()
+            } else {
+                registerToozer()
+            }
         }
 
-        machineId?.observe(this, Observer<Int>{
-            Log.i("ScanCallback", "in plank fragment beacon change: {${machineId?.value}}")
-            registerToozer()
-        })
+        mainActivity.nearestMachineId.observeForever(observer)
     }
 
     override fun onCreateView(
@@ -97,7 +104,7 @@ class PlankFragment: BaseToozifierFragment() {
 
         toozifier.addListener(buttonEventListener)
 
-        previousButton.setOnClickListener{
+        previousButton.setOnClickListener {
             viewPager.currentItem = viewPager.currentItem - 1
         }
 
@@ -142,9 +149,9 @@ class PlankFragment: BaseToozifierFragment() {
     }
 
     fun setUpUi() {
-        Log.i("ScanCallback", "machine id: ${machineId?.value}")
+        Log.i("ScanCallback", "machine id: ${mainActivity.nearestMachineId.value}")
 
-        when(machineId?.value){
+        when (mainActivity.nearestMachineId.value) {
             1 -> {
                 Log.i("ScanCallback", "in plank fragment view id: ${viewPager.currentItem}")
                 toozifier.updateCard(
@@ -168,7 +175,8 @@ class PlankFragment: BaseToozifierFragment() {
 
         override fun onButtonEvent(button: Button) {
             Timber.d("$TOOZ_EVENT Button event: $button")
-            val plankId = viewPager.get(viewPager.currentItem).findViewById<TextView>(R.id.plank_id).text.toString().toInt()
+            val plankId = viewPager.get(viewPager.currentItem)
+                .findViewById<TextView>(R.id.plank_id).text.toString().toInt()
             viewPager.currentItem = viewPager.currentItem + 1
             lifecycle.coroutineScope.launch {
                 viewModel.plankIsDone(plankId)
@@ -178,6 +186,7 @@ class PlankFragment: BaseToozifierFragment() {
 
     override fun onDestroyView() {
         deregisterToozer()
+        mainActivity.nearestMachineId.removeObserver(observer)
         super.onDestroyView()
         _binding = null
     }
