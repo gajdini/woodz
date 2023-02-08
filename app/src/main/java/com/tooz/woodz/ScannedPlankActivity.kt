@@ -61,13 +61,13 @@ class ScannedPlankActivity : BaseActivity() {
         setUpActivityUI()
         registerToozer()
 
-        observer = Observer{
+        observer = Observer {
             Log.i("ScanCallback", "in scanned plank activity beacon: {${nearestMachineId.value}}")
             setUpActivityUI()
             registerToozer()
         }
 
-        nearestMachineId.observeForever( observer)
+        nearestMachineId.observeForever(observer)
     }
 
     private fun initViews() {
@@ -90,7 +90,6 @@ class ScannedPlankActivity : BaseActivity() {
         when (nearestMachineId.value) {
             2 -> {
                 setContentView(plankCornerDetailsView)
-
             }
             3 -> {
                 setContentView(plankDetailsView)
@@ -99,6 +98,7 @@ class ScannedPlankActivity : BaseActivity() {
                 setContentView(defaultView)
             }
         }
+        setUpUI()
     }
 
     private fun onBarcodeScanned() {
@@ -142,25 +142,28 @@ class ScannedPlankActivity : BaseActivity() {
         }
 
         override fun onRegisterSuccess() {
-            when (nearestMachineId.value) {
-                2 -> {
-                    setUpUI(plankCornerDetailsView)
-
-                }
-               3 -> {
-                    setUpUI(plankDetailsView)
-                }
-                else -> {
-                    setUpUI(defaultView)
-                }
-            }
+            setUpUI()
         }
     }
 
-    private fun setUpUI(promptView: View) {
+    private fun setUpUI() {
+        Log.i("BarcodeScanned", "this is machine id in scanned plank ${nearestMachineId.value}")
+
+        val view: View = when (nearestMachineId.value) {
+            2 -> {
+                plankCornerDetailsView
+            }
+            3 -> {
+                plankDetailsView
+            }
+            else -> {
+                defaultView
+            }
+        }
+
         toozifier.updateCard(
-            promptView = promptView,
-            focusView = promptView,
+            promptView = view,
+            focusView = view,
             timeToLive = Constants.FRAME_TIME_TO_LIVE_FOREVER
         )
     }

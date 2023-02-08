@@ -75,11 +75,7 @@ class PlankFragment : BaseToozifierFragment() {
 
         observer = Observer{
             Log.i("ScanCallback", "in plank fragment beacon change: {${mainActivity.nearestMachineId.value}}")
-            if (toozifier.isRegistered) {
-                setUpUi()
-            } else {
-                registerToozer()
-            }
+            registerToozer()
         }
 
         mainActivity.nearestMachineId.observeForever(observer)
@@ -106,10 +102,12 @@ class PlankFragment : BaseToozifierFragment() {
 
         previousButton.setOnClickListener {
             viewPager.currentItem = viewPager.currentItem - 1
+            setUpUi()
         }
 
         nextButton.setOnClickListener {
             viewPager.currentItem = viewPager.currentItem + 1
+            setUpUi()
         }
 
         lifecycle.coroutineScope.launch {
@@ -149,6 +147,9 @@ class PlankFragment : BaseToozifierFragment() {
     }
 
     fun setUpUi() {
+        if (!toozifier.isRegistered){
+            registerToozer()
+        }
         Log.i("ScanCallback", "machine id: ${mainActivity.nearestMachineId.value}")
 
         when (mainActivity.nearestMachineId.value) {
@@ -182,6 +183,17 @@ class PlankFragment : BaseToozifierFragment() {
                 viewModel.plankIsDone(plankId)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mainActivity.nearestMachineId.observeForever(observer)
+        toozifier.addListener(buttonEventListener)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mainActivity.nearestMachineId.removeObserver(observer)
     }
 
     override fun onDestroyView() {
