@@ -10,7 +10,7 @@
     <string name="group">Group</string>
     <string name="forward">Forward</string>
     <string name="camera">Camera</string>
-    <string name="default_prompt_text">Machine not detected yet</string>
+    <string name="default_prompt_text">Machine not detected</string>
     <string name="location_permission_alert_title">This app needs location access.</string>
     <string name="location_permission_alert_message">Please go to Settings -> Applications -> Permissions and grant location access to this app.</string>
     <string name="ok">OK</string>

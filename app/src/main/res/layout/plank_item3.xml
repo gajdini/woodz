@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:gravity="center"
-            android:text="links"
+            android:text="Links"
             android:textColor="@color/white"
             android:textSize="11sp"
             android:textStyle="bold" />
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:gravity="center"
-            android:text="oben"
+            android:text="Vorn"
             android:textColor="@color/white"
             android:textSize="11sp"
             android:textStyle="bold" />
@@ -90,7 +90,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:gravity="center"
-            android:text="rechts"
+            android:text="Rechts"
             android:textColor="@color/white"
             android:textSize="11sp"
             android:textStyle="bold" />
@@ -117,7 +117,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:gravity="center"
-            android:text="unten"
+            android:text="Hinten"
             android:textColor="@color/white"
             android:textSize="11sp"
             android:textStyle="bold" />
